@@ -103,8 +103,8 @@ class Trainer(
         checkpoint_callback: bool = True,
         callbacks: Optional[Union[List[Callback], Callback]] = None,
         default_root_dir: Optional[str] = None,
-        gradient_clip_val: float = 0.0,
-        gradient_clip_algorithm: str = "norm",
+        gradient_clip_val: Optional[float] = None,
+        gradient_clip_algorithm: Optional[str] = None,
         process_position: int = 0,
         num_nodes: int = 1,
         num_processes: int = 1,
@@ -222,8 +222,16 @@ class Trainer(
             gradient_clip_val: The value at which to clip gradients. Passing ``gradient_clip_val=0`` disables gradient
                 clipping.
 
+                .. deprecated:: v1.5
+                    ``gradient_clip_val`` has been deprecated in v1.5 and will be removed in v1.7.
+                    Please configure gradient clipping directly in ``LightningModule.clip_gradients`` instead.
+
             gradient_clip_algorithm: The gradient clipping algorithm to use. Pass ``gradient_clip_algorithm="value"``
                 for clip_by_value, and ``gradient_clip_algorithm="norm"`` for clip_by_norm.
+
+                .. deprecated:: v1.5
+                    ``gradient_clip_algorithm`` has been deprecated in v1.5 and will be removed in v1.7.
+                    Please configure gradient clipping directly in ``LightningModule.clip_gradients`` instead.
 
             limit_train_batches: How much of training dataset to check (float = fraction, int = num_batches).
 

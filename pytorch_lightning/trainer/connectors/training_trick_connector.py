@@ -11,10 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 from pytorch_lightning.callbacks import GradientAccumulationScheduler
-from pytorch_lightning.utilities import GradClipAlgorithmType
+from pytorch_lightning.utilities import GradClipAlgorithmType, rank_zero_deprecation
 from pytorch_lightning.utilities.exceptions import MisconfigurationException
 
 
@@ -24,8 +24,8 @@ class TrainingTricksConnector:
 
     def on_trainer_init(
         self,
-        gradient_clip_val: float,
-        gradient_clip_algorithm: str,
+        gradient_clip_val: Optional[float],
+        gradient_clip_algorithm: Optional[str],
         track_grad_norm: Union[int, float, str],
         accumulate_grad_batches: Union[int, Dict[int, int]],
         terminate_on_nan: bool,
@@ -34,6 +34,22 @@ class TrainingTricksConnector:
         self.trainer.terminate_on_nan = terminate_on_nan
 
         # gradient clipping
+        if gradient_clip_val is not None:
+            rank_zero_deprecation(
+                "`Trainer(gradient_clip_val)` is deprecated in v1.5 and will be removed in v1.7."
+                " Please use `LightningModule.clip_gradients` instead."
+            )
+        else:
+            gradient_clip_val = 0.0
+
+        if gradient_clip_algorithm is not None:
+            rank_zero_deprecation(
+                "`Trainer(gradient_clip_algorithm)` is deprecated in v1.5 and will be removed in v1.7."
+                " Please use `LightningModule.clip_gradients` instead."
+            )
+        else:
+            gradient_clip_algorithm = "norm"
+
         if gradient_clip_algorithm not in list(GradClipAlgorithmType):
             raise MisconfigurationException(f"gradient_clip_algorithm should be in {list(GradClipAlgorithmType)}")
         self.trainer.gradient_clip_val = gradient_clip_val
