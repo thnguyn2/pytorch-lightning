@@ -19,7 +19,6 @@ import logging
 import numbers
 import os
 import tempfile
-from abc import ABC
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Mapping, Optional, Tuple, Union
@@ -54,7 +53,6 @@ log = logging.getLogger(__name__)
 
 
 class LightningModule(
-    ABC,
     DeviceDtypeModuleMixin,
     HyperparametersMixin,
     ModelIO,
@@ -596,7 +594,7 @@ class LightningModule(
             the output will also be a collection with tensors of this shape.
         """
         group = group if group is not None else torch.distributed.group.WORLD
-        all_gather = self.trainer.accelerator.all_gather
+        all_gather = self.trainer.training_type_plugin.all_gather
         data = convert_to_tensors(data, device=self.device)
         return apply_to_collection(data, torch.Tensor, all_gather, group=group, sync_grads=sync_grads)
 
@@ -1201,7 +1199,7 @@ class LightningModule(
         Example::
 
             def configure_callbacks(self):
-                early_stop = EarlyStopping(monitor"val_acc", mode="max")
+                early_stop = EarlyStopping(monitor="val_acc", mode="max")
                 checkpoint = ModelCheckpoint(monitor="val_loss")
                 return [early_stop, checkpoint]
 
