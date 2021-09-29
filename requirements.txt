@@ -1,7 +1,7 @@
 # the default package dependencies
 
 numpy>=1.17.2
-torch>=1.6
+torch==1.7.1+cu110
 future>=0.17.1  # required for builtins in setup.py
 tqdm>=4.41.0
 PyYAML>=5.1
@@ -10,4 +10,8 @@ tensorboard>=2.2.0
 torchmetrics>=0.4.1
 pyDeprecate==0.3.1
 packaging>=17.0
+absl-py
+torchvision==0.8.2+cu110
+torchaudio==0.7.2
+ipywidgets
 typing-extensions  # TypedDict support for python<3.8
